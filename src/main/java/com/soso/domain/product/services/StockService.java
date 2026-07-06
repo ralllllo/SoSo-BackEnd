@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import com.soso.domain.RAG.RagClient;
-
 @Service
 public class StockService {
 
@@ -32,9 +30,6 @@ public class StockService {
 
     @Autowired
     private com.soso.domain.notification.dao.NotificationDAO notificationDAO;
-    
-    @Autowired
-    private RagClient ragClient;
 
     public List<StockDTO> getStockList(Map<String, Object> filters) {
         return stockDAO.selectStockList(filters);
@@ -345,14 +340,6 @@ public class StockService {
                     stock.getDefaultExpiryDays()
             );
 
-
-            ragClient.upsert(
-                    "stock",
-                    stock.getStockSeq(),
-                    text,
-                    metadata
-            );
-
         } catch (Exception e) {
         }
     }
@@ -464,14 +451,6 @@ public class StockService {
                     expirationDate,
                     reason,
                     memo
-            );
-
-
-            ragClient.upsert(
-                    "stock_history",
-                    history.getHistorySeq(),
-                    text,
-                    metadata
             );
 
         } catch (Exception e) {

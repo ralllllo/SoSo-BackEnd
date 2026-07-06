@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import com.soso.domain.RAG.RagClient;
 import com.soso.domain.order.dao.OrderDAO;
 import com.soso.domain.order.dto.OrderDTO;
 import com.soso.domain.order.dto.OrderItemDTO;
@@ -22,9 +21,6 @@ import com.soso.domain.order.dto.OrderSaveItemDTO;
 public class OrderService {
 	
 	@Autowired OrderDAO dao;
-	
-	@Autowired
-	private RagClient ragClient;
 	
 	@Autowired
 	private SimpMessagingTemplate messagingTemplate;
@@ -178,19 +174,7 @@ public class OrderService {
 	    metadata.put("status", order.get("status"));
 	    metadata.put("totalAmount", order.get("totalAmount"));
 	    metadata.put("orderDate", order.get("orderDate"));
-	    
 
-	    // 5. FastAPI /rag/upsert 호출
-	    // docType = order
-	    // refId = orderSeq
-	    // text = 챗봇이 읽을 문장
-	    // metadata = 부가 정보
-	    ragClient.upsert(
-	        "order",
-	        String.valueOf(orderSeq),
-	        text,
-	        metadata
-	    );
 
 	    // 6. 콘솔 확인용 로그
 	}

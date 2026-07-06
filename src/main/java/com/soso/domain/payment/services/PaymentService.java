@@ -26,18 +26,11 @@ import com.soso.domain.payment.dto.PaymentDTO;
 
 import tools.jackson.databind.ObjectMapper;
 
-import com.soso.domain.RAG.RagClient;
-
-
 @Service
 public class PaymentService {
 	
 	@Autowired
 	private PaymentDAO dao;
-	
-	// FastAPI RAG 서버에 결제 내역을 upsert하기 위한 클라이언트
-	@Autowired
-	private RagClient ragClient;
 	
 	
     // application.properties에 작성한 포트원 상점 ID
@@ -455,18 +448,6 @@ public class PaymentService {
 	                card.getCardNumberMasked(),
 	                totalAmount,
 	                orderSummary.toString()
-	        );
-
-	        // 확인용 로그
-
-	        // FastAPI /rag/upsert 호출
-	        // type = payment
-	        // refId = paymentSeq
-	        ragClient.upsert(
-	                "payment",
-	                paymentSeq,
-	                text,
-	                metadata
 	        );
 
 	    } catch (Exception e) {

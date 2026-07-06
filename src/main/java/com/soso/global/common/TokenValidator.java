@@ -28,6 +28,13 @@ public class TokenValidator implements HandlerInterceptor{
 			return true;
 		}
 		
+		// RAG 테스트 API는 토큰 검사 없이 통과
+	    String path = request.getRequestURI();
+
+	    if(path.startsWith("/ai/")) {
+	        return true;
+	    }
+		
 		// 프론트에서 보낸 헤더를 꺼냄
 		// 예) Authorization: Bearer eyJhbGciOi...
 		String authHeader = request.getHeader("Authorization");
