@@ -78,11 +78,11 @@ public class PartnerMyPageController {
     @PatchMapping("/withdraw")
     public ResponseEntity<Map<String, String>> withdrawMember(
             @RequestAttribute("user_seq") Long userSeq,
-            @RequestBody PartnerWithdrawalDTO withdrawalData) { // ⭕ 탈퇴사유 DTO로 안전하게 수신!
+            @RequestBody PartnerWithdrawalDTO withdrawalData) { 
         Map<String, String> response = new HashMap<>();
         try {
             withdrawalData.setUserSeq(userSeq.intValue());
-            // 🎯 서비스단에서 status = 'WITHDRAWN', 사유 = 데이터 저장하는 UPDATE 로직 수행!
+            
             myPageService.withdrawMember(withdrawalData);
             
             response.put("status", "success");

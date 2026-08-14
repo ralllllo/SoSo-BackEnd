@@ -6,9 +6,9 @@ import java.time.LocalDate;
 public class GroupBuyDTO {
     private Integer groupBuySeq;
     private Integer userSeq;
-    private String creatorType; // 추가: 개설자 타입
-    private String partnerName; // 변경: 거래처명 (직접 입력)
-    private String itemName;    // 변경: 품목명 (직접 입력)
+    private String creatorType; 
+    private String partnerName; 
+    private String itemName;    
     private String category;    
     private Integer quantity;   
     private Integer targetParticipants; 
@@ -22,11 +22,11 @@ public class GroupBuyDTO {
     private String status;
     private LocalDateTime createdAt;
     
-    // (선택) 기존 필드 유지
+    
     private String groupName;
     private String description;
 
-    // 참여자 전용 필드 및 권한 필드
+    
     private String paymentStatus;
     private String deliveryStatus;
     private boolean isOwner;

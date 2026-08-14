@@ -7,7 +7,7 @@ public class OrderPaymentRequestDTO {
 	private Integer storeSeq;
 	private Integer partnerSeq;
 	private Integer cardSeq;
-	private List<Integer> orderSeqList; // 결제할 발주 번호 목록
+	private List<Integer> orderSeqList; 
 	
 	public OrderPaymentRequestDTO() {}
 	public OrderPaymentRequestDTO(Integer storeSeq, Integer partnerSeq, Integer cardSeq, List<Integer> orderSeqList) {

@@ -9,10 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * @file BoardService.java
- * @description 게시판 관련 비즈니스 로직을 처리하는 서비스 클래스입니다.
- */
+
 @Service
 public class BoardService {
 

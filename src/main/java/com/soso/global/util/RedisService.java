@@ -9,7 +9,7 @@ import java.time.Duration;
 public class RedisService {
     private final StringRedisTemplate redisTemplate;
 
-    // 롬복 없이 직접 생성자 작성 (스프링이 자동으로 의존성 주입)
+    
     public RedisService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }

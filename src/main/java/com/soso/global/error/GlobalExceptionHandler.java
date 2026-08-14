@@ -15,9 +15,7 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    /**
-     * 모든 RuntimeException을 캐치하여 500 에러와 함께 JSON 응답을 반환합니다.
-     */
+    
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException e) {
         logger.error("RuntimeException 발생: {}", e.getMessage());
@@ -30,9 +28,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
-    /**
-     * 일반적인 Exception을 캐치합니다.
-     */
+    
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleException(Exception e) {
         logger.error("일반 Exception 발생: {}", e.getMessage());

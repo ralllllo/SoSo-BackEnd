@@ -37,27 +37,21 @@ public class BusinessMypageService {
     private FileDAO fileDAO;
 
     @Autowired
-    private BizValidationService bizValidationService; // 사업자 인증 서비스 주입
+    private BizValidationService bizValidationService; 
 
-    /**
-     * 👤 사장님 마이페이지 정보 조회
-     * 특정 매장(storeSeq) 정보와 함께 사장님의 계정 정보를 가져옵니다.
-     * storeSeq가 null이면 기본 매장(첫 번째)을 가져옵니다.
-     */
+    
     public BusinessMypageDTO getBusinessMypage(Long user_Seq, Long storeSeq) {
         BusinessMypageDTO dto = businessMypageDAO.getBusinessInfo(user_Seq, storeSeq);
         
         if (dto != null && dto.getProfileImageUrl() != null && !dto.getProfileImageUrl().isEmpty()) {
-            // DB에 저장된 sysname 목록을 풀 URL 형태로 변환하지 않고 그대로 넘깁니다. 
-            // 프론트엔드에서 split(',') 하여 처리하기 때문입니다.
+            
+            
         }
         
         return dto;
     }
 
-    /**
-     * 🏪 사장님이 소유한 모든 매장 목록 조회
-     */
+    
     public List<BusinessMypageDTO> getAllStores(Long userSeq) {
         return businessMypageDAO.getAllStores(userSeq);
     }
@@ -65,36 +59,36 @@ public class BusinessMypageService {
     @Transactional(rollbackFor = Exception.class)
     public String updateBusinessProfile(BusinessUpdateDTO updateDto) throws Exception {
         Long userSeq = updateDto.getUserSeq();
-        Long storeSeq = updateDto.getStoreSeq(); // 🏪 [멀티 프로필] 수정 대상 매장 번호
+        Long storeSeq = updateDto.getStoreSeq(); 
 
-        // 1. 닉네임 중복 체크 (본인 제외)
+        
         if (memberDAO.countByNicknameExcludingSelf(updateDto.getNickname(), userSeq.intValue()) > 0) {
             return "duplNickname";
         }
 
-        // 2. 이메일 중복 체크 (본인 제외)
+        
         if (memberDAO.countByEmailExcludingSelf(updateDto.getEmail(), userSeq.intValue()) > 0) {
             return "duplEmail";
         }
 
-        // 3. 사용자 및 상점 정보 업데이트
+        
         businessMypageDAO.updateUser(updateDto);
-        businessMypageDAO.updateStore(updateDto); // Mapper에서 storeSeq 조건으로 특정 매장만 수정함
+        businessMypageDAO.updateStore(updateDto); 
 
-        // 4. [멀티 프로필 대응] 해당 매장(storeSeq)의 기존 이미지 목록만 조회
-        // board_seq에 storeSeq를 넣어 어떤 매장의 사진을 바꿀지 명확히 함
+        
+        
         List<FileSaveDto> existingFiles = fileDAO.getFilesByBoardSeqAndCategory(storeSeq.intValue(), "STORE_IMAGE");
 
-        // 5. 외관 사진 처리 (Index 0)
+        
         MultipartFile exteriorImg = updateDto.getExteriorImg();
         if (exteriorImg != null && !exteriorImg.isEmpty()) {
             String oldSysName = (existingFiles.size() > 0) ? existingFiles.get(0).getSysname() : null;
-            // updateFile 대신 uploadToGcsAndGetUrlWithBoardSeq 등을 사용하여 storeSeq와 함께 저장하는 로직 권장
-            // 여기서는 기존 아키텍처를 유지하며 oldSysName을 교체함
+            
+            
             fileService.updateFileWithBoardSeq(exteriorImg, userSeq.intValue(), "STORE_IMAGE", oldSysName, storeSeq.intValue());
         }
 
-        // 6. 내부 사진 처리 (Index 1)
+        
         MultipartFile interiorImg = updateDto.getInteriorImg();
         if (interiorImg != null && !interiorImg.isEmpty()) {
             String oldSysName = (existingFiles.size() > 1) ? existingFiles.get(1).getSysname() : null;
@@ -104,44 +98,35 @@ public class BusinessMypageService {
         return "success";
     }
 
-    /**
-     * 🏪 다중 매장 등록 비즈니스 로직
-     * DB에 매장 정보를 저장하고, 업로드된 사진 파일들을 처리합니다.
-     * 
-     * @param registerDto - 매장 정보 데이터 가방
-     * @param exteriorImg - 외부 사진 파일
-     * @param interiorImg - 내부 사진 파일
-     * @return 성공 시 "success", 실패 시 "fail"
-     * @throws Exception - DB 저장 또는 파일 업로드 중 발생할 수 있는 예외
-     */
+    
     @Transactional(rollbackFor = Exception.class)
     public String registerMultiProfile(BusinessMultiProfileDTO registerDto, MultipartFile exteriorImg, MultipartFile interiorImg) throws Exception {
         
-        // 1. [사업자 번호 검증] 
-        // 새로 만든 BusinessMultiProfileDTO를 BizValidationService에 통째로 넘겨 검증합니다.
-        // 내부적으로 '중복 체크'를 건너뛰도록 설계되어 있어, 이미 등록된 사장님 번호라도 인증이 가능합니다.
+        
+        
+        
         boolean isValid = bizValidationService.validateBusiness(registerDto);
         
         if (!isValid) {
-            // 국세청 데이터와 일치하지 않는 경우 "invalidBizInfo"를 반환하여 프론트에서 알 수 있게 합니다.
+            
             return "invalidBizInfo";
         }
 
-        // 2. [매장 정보 저장] 검증이 통과되면 stores 테이블에 새로운 매장 정보를 Insert 합니다.
-        // MyBatis의 useGeneratedKeys 설정을 통해 생성된 storeSeq가 registerDto에 자동으로 채워집니다.
+        
+        
         int result = businessMypageDAO.insertStore(registerDto);
 
         if (result > 0) {
-            // DB 저장 후 생성된 매장 번호와 사장님 회원 번호를 가져옵니다.
+            
             Long storeSeq = registerDto.getStoreSeq();
             Integer userSeq = registerDto.getUserSeq().intValue();
 
-            // 3. [파일 업로드] 가게 외부 사진이 있다면 GCS(구글 클라우드)에 업로드하고 DB에 기록합니다.
+            
             if (exteriorImg != null && !exteriorImg.isEmpty()) {
                 fileService.uploadToGcsAndGetUrlWithBoardSeq(exteriorImg, userSeq, "STORE_IMAGE", storeSeq.intValue());
             }
 
-            // 4. [파일 업로드] 가게 내부 사진이 있다면 동일한 방식으로 처리합니다.
+            
             if (interiorImg != null && !interiorImg.isEmpty()) {
                 fileService.uploadToGcsAndGetUrlWithBoardSeq(interiorImg, userSeq, "STORE_IMAGE", storeSeq.intValue());
             }
@@ -149,13 +134,11 @@ public class BusinessMypageService {
             return "success";
         }
         
-        // 저장이 실패한 경우 (MyBatis result가 0인 경우)
+        
         return "fail";
     }
 
-    /**
-     * 스마트 알림 설정 조회
-     */
+    
     public BusinessNotificationSettingsDTO getNotificationSettings(Long userSeq, Long storeSeq) {
         BusinessMypageDTO profile = businessMypageDAO.getBusinessInfo(userSeq, storeSeq);
         String alertStockYn = "N";
@@ -172,12 +155,10 @@ public class BusinessMypageService {
         return new BusinessNotificationSettingsDTO(alertStockYn, alertExpiryYn, alertOrderYn, settings);
     }
 
-    /**
-     * 스마트 알림 설정 저장 (트랜잭션 적용)
-     */
+    
     @Transactional(rollbackFor = Exception.class)
     public void updateNotificationSettings(Long userSeq, Long storeSeq, BusinessNotificationSettingsDTO settingsDto) throws Exception {
-        // 1. users 테이블의 전역 알림 설정 업데이트
+        
         Map<String, Object> userParams = new HashMap<>();
         userParams.put("userSeq", userSeq);
         userParams.put("alertStockYn", settingsDto.getAlertStockYn());
@@ -185,7 +166,7 @@ public class BusinessMypageService {
         userParams.put("alertOrderYn", settingsDto.getAlertOrderYn());
         businessMypageDAO.updateUserAlertSettings(userParams);
 
-        // 2. user_notification_settings 매장 상세 알림 설정 업데이트 (기존 설정 DELETE 후 INSERT)
+        
         businessMypageDAO.deleteUserNotificationSettings(storeSeq);
         
         if (settingsDto.getSettings() != null) {

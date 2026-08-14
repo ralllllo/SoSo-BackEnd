@@ -2,7 +2,7 @@ package com.soso.domain.order.dto;
 
 import java.util.List;
 
-public class OrderDTO { // 발주서 작성
+public class OrderDTO { 
 	
 	private Long orderSeq;
 	private Long buyerSeq;
@@ -17,7 +17,7 @@ public class OrderDTO { // 발주서 작성
 	private String address2;
 	private String orderMemo;
 	
-	// order_items에 저장할 발주 품목 목록
+	
 	private List<OrderSaveItemDTO> items;
 	
 	public OrderDTO(List<OrderSaveItemDTO> items) {

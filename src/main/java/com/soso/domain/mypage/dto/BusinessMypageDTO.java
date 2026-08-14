@@ -3,7 +3,7 @@ package com.soso.domain.mypage.dto;
 import java.time.LocalDate;
 
 public class BusinessMypageDTO {
-    // User Info
+    
     private String userId;
     private String name;
     private String nickname;
@@ -11,20 +11,20 @@ public class BusinessMypageDTO {
     private String phone;
     private String createdAt;
 
-    // Store Info
-    private Long storeSeq;       // 매장 고유 번호 추가
+    
+    private Long storeSeq;       
     private String bizNumber;
     private String companyName;
-    private String ceoName;      // 대표자명 필드 추가 (인증용)
+    private String ceoName;      
     private LocalDate openingDate;
     private String zonecode;
     private String address1;
     private String address2;
 
-    // Image URL
+    
     private String profileImageUrl;
 
-    // Smart Notification settings
+    
     private String alertStockYn;
     private String alertExpiryYn;
     private String alertOrderYn;

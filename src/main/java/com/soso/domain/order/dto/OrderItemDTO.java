@@ -1,6 +1,6 @@
 package com.soso.domain.order.dto;
 
-public class OrderItemDTO { // 공급업체 품목 선택할 때 뜨는 목록
+public class OrderItemDTO { 
 	
 	private int itemSeq;
 	private int userSeq;

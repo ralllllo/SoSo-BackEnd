@@ -3,7 +3,7 @@ package com.soso.domain.mypage.dto;
 import java.util.Date;
 
 public class PartnerProfileDTO {
-    // User 정보
+    
     private String userId;
     private String name;
     private String nickname;
@@ -11,7 +11,7 @@ public class PartnerProfileDTO {
     private String phone;
     private String createdAt;
     
-    // Store 정보
+    
     private String bizNumber;
     private String repName;
 	private String companyName;
@@ -21,7 +21,7 @@ public class PartnerProfileDTO {
     private String address2;
     private String ceoName;
     
-    //file 정보
+    
     private String storeSysNames;
 
     public String getStoreSysNames() {
@@ -34,7 +34,7 @@ public class PartnerProfileDTO {
 
 	public PartnerProfileDTO() {}
 
-    // Getters and Setters
+    
     
     public String getCeoName() {
         return ceoName;

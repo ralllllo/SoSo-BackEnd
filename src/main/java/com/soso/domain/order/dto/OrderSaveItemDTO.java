@@ -1,6 +1,6 @@
 package com.soso.domain.order.dto;
 
-public class OrderSaveItemDTO { // 발주 할 때 품목 저장
+public class OrderSaveItemDTO { 
 	
 	private Long orderItemSeq;
 	private Long orderSeq;
@@ -9,7 +9,7 @@ public class OrderSaveItemDTO { // 발주 할 때 품목 저장
 	private String categoryName;
 	private Integer quantity;
 	private String spec;
-	private Integer unitPrice; // 단가
+	private Integer unitPrice; 
 	private Integer totalPrice;
 	
 	public OrderSaveItemDTO() {}

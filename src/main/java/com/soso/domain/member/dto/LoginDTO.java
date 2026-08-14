@@ -11,7 +11,7 @@ public class LoginDTO {
 	public void setUser_seq(Long user_seq) {
 		this.user_seq = user_seq;
 	}
-	private String user_type;    // BUSINESS, PARTNER, ADMIN
+	private String user_type;    
 	
 	public LoginDTO() {}
 	

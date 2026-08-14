@@ -7,7 +7,7 @@ public class FinanceDTO {
     private int financeSeq;
     private int userSeq;
     private Integer storeSeq;
-    private String type; // INCOME, EXPENSE
+    private String type; 
     private int amount;
     private String category;
     private String description;

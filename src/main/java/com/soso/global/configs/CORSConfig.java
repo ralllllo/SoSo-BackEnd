@@ -8,12 +8,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CORSConfig implements WebMvcConfigurer{
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		// TODO Auto-generated method stub
+		
 		WebMvcConfigurer.super.addCorsMappings(registry);
-		registry.addMapping("/**") // 모든 API 경로에 대해
-        .allowedOrigins("http://localhost:5173","https://soso-test-1dd3d.web.app","https://emsemsdl.shop")// 리액트 주소 허용
+		registry.addMapping("/**") 
+        .allowedOrigins("http://localhost:5173","https://soso-test-1dd3d.web.app","https://emsemsdl.shop")
         .allowedMethods("GET", "POST", "PUT", "DELETE","PATCH", "OPTIONS")
         .allowedHeaders("*")
-        .allowCredentials(true);// 이 주소로부터 들어오는 것은 허용해주겠다.
+        .allowCredentials(true);
 	}
 }

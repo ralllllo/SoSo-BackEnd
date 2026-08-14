@@ -18,10 +18,7 @@ public class StockController {
     @Autowired
     private StockService stockService;
 
-    /**
-     * 재고 목록 조회
-     * @param storeSeq 프론트엔드 sessionStorage에서 전달받은 매장 번호
-     */
+    
     @GetMapping
     public ResponseEntity<List<StockDTO>> list(
             jakarta.servlet.http.HttpServletRequest request,
@@ -43,20 +40,14 @@ public class StockController {
         return ResponseEntity.ok(stockService.getStockList(filters));
     }
 
-    /**
-     * 품목 등록
-     * @param stock DTO 내부에 storeSeq 포함됨
-     */
+    
     @PostMapping
     public ResponseEntity<String> register(@RequestParam int storeSeq,@RequestBody StockDTO stock) {
         stockService.createStock(storeSeq,stock);
         return ResponseEntity.ok("품목이 등록되었습니다.");
     }
 
-    /**
-     * 입고 처리
-     * @param storeSeq 쿼리 파라미터로 전달받음
-     */
+    
     @PostMapping("/incoming")
     public ResponseEntity<String> incoming(
             @RequestParam int storeSeq,
@@ -69,9 +60,7 @@ public class StockController {
         }
     }
 
-    /**
-     * 출고 처리
-     */
+    
     @PostMapping("/outbound")
     public ResponseEntity<String> outbound(
             @RequestParam int storeSeq,
@@ -84,9 +73,7 @@ public class StockController {
         }
     }
 
-    /**
-     * 재고 조정
-     */
+    
     @PostMapping("/adjust")
     public ResponseEntity<String> adjust(
             @RequestParam int storeSeq,
@@ -99,9 +86,7 @@ public class StockController {
         }
     }
 
-    /**
-     * 품목 정보 수정
-     */
+    
     @PutMapping("/{stockSeq}")
     public ResponseEntity<String> update(
             @PathVariable int stockSeq, 
@@ -117,9 +102,7 @@ public class StockController {
         }
     }
 
-    /**
-     * 품목 삭제
-     */
+    
     @DeleteMapping("/{stockSeq}")
     public ResponseEntity<String> delete(
             @PathVariable int stockSeq,

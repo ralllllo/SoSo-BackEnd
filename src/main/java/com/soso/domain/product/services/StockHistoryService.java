@@ -17,16 +17,12 @@ public class StockHistoryService {
     @Autowired
     private StockHistoryDAO stockHistoryDAO;
 
-    /**
-     * 대시보드 메인 화면용 최신 5건 조회
-     */
+    
     public List<StockHistoryDTO> getDashboardHistory(int userSeq, Integer storeSeq) {
         return stockHistoryDAO.getTop5StockHistory(userSeq, storeSeq);
     }
 
-    /**
-     * 모달창용 페이징 데이터 조회 (필터링 추가)
-     */
+    
     public Map<String, Object> getModalHistory(int page, int size, int userSeq, Integer storeSeq, Integer stockSeq, String transactionType, String startDate, String endDate, String keyword) {
         int offset = (page - 1) * size;
 
@@ -42,9 +38,7 @@ public class StockHistoryService {
         return response;
     }
 
-    /**
-     * 재고 변동 이력 기록 (필요 시 서비스 간 호출용)
-     */
+    
     @Transactional
     public void recordHistory(StockHistoryDTO history) {
         stockHistoryDAO.insertStockHistory(history);

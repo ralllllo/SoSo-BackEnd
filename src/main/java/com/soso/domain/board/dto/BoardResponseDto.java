@@ -2,10 +2,7 @@ package com.soso.domain.board.dto;
 
 import java.time.LocalDateTime;
 
-/**
- * @file BoardResponseDto.java
- * @description 게시판 (boards) 목록 조회를 위한 DTO입니다.
- */
+
 public class BoardResponseDto {
     private int boardSeq;
     private int userSeq;
@@ -16,7 +13,7 @@ public class BoardResponseDto {
     private int views;
     private LocalDateTime createdAt;
     
-    // 조인을 통해 가져올 작성자 정보 (옵션)
+    
     private String authorName;
 
     public BoardResponseDto() {}

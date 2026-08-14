@@ -2,10 +2,10 @@ package com.soso.domain.member.dto;
 
 import java.util.List;
 
-// ⭕ 국세청 사업자 검증용 장부들을 이 파일 하나로 싹 모았네!
+
 public class BizValidateDto {
 
-    // ================= [1] 요청(Request) 장부 =================
+    
     public static class Request {
         private List<BizInfo> businesses;
 
@@ -28,7 +28,7 @@ public class BizValidateDto {
                 this.b_no = b_no; this.start_dt = start_dt; this.p_nm = p_nm; this.b_nm = b_nm;
                 this.p_nm2 = p_nm2; this.corp_no = corp_no; this.b_adr = b_adr;
             }
-            // ... 게터 세터 수동 작성
+            
             public String getB_no() { return b_no; }
             public void setB_no(String b_no) { this.b_no = b_no; }
             public String getStart_dt() { return start_dt; }
@@ -46,7 +46,7 @@ public class BizValidateDto {
         }
     }
 
-    // ================= [2] 응답(Response) 장부 =================
+    
     public static class Response {
         private Integer request_cnt;
         private Integer valid_cnt;
@@ -58,7 +58,7 @@ public class BizValidateDto {
             this.request_cnt = request_cnt; this.valid_cnt = valid_cnt;
             this.status_code = status_code; this.data = data;
         }
-        // ... 게터 세터 수동 작성
+        
         public Integer getRequest_cnt() { return request_cnt; }
         public void setRequest_cnt(Integer request_cnt) { this.request_cnt = request_cnt; }
         public Integer getValid_cnt() { return valid_cnt; }
@@ -77,7 +77,7 @@ public class BizValidateDto {
             public BizData(String b_no, String valid, String valid_msg) {
                 this.b_no = b_no; this.valid = valid; this.valid_msg = valid_msg;
             }
-            // ... 게터 세터 수동 작성
+            
             public String getB_no() { return b_no; }
             public void setB_no(String b_no) { this.b_no = b_no; }
             public String getValid() { return valid; }

@@ -1,9 +1,6 @@
 package com.soso.domain.account.dto;
 
-/**
- * @file AccountRelationRequestDto.java
- * @description 거래처 등록 요청 데이터를 담는 DTO입니다.
- */
+
 public class AccountRelationRequestDto {
     private int businessSeq;
     private int partnerSeq;
