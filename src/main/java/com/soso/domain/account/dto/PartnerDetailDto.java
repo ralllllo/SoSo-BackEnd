@@ -1,9 +1,6 @@
 package com.soso.domain.account.dto;
 
-/**
- * @file PartnerDetailDto.java
- * @description 특정 거래처(매장)의 상세 정보(주소, 대표자, 전화번호, 이메일 등)를 담는 DTO입니다.
- */
+
 public class PartnerDetailDto {
     private int storeSeq;
     private String companyName;

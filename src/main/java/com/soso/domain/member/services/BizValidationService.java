@@ -29,44 +29,44 @@ public class BizValidationService {
     @Value("${api.public-data.service-key}")
     private String serviceKey;
 
-    // =========================================================================
-    // [방식 1] 🔑 회원가입할 때 호출하는 메서드 (중복 체크 포함)
-    // =========================================================================
+    
+    
+    
     public boolean validateBusiness(String bNo, String startDt, String pNm, String bNm) {
         String cleanBNo = bNo.replaceAll("-", "");
         String cleanStartDt = startDt.replaceAll("-", "");
         
-        // 회원가입 시에는 중복 체크를 'true'로 설정합니다.
+        
         return executeNtsApi(cleanBNo, cleanStartDt, pNm, bNm, true);
     }
 
-    // =========================================================================
-    // [방식 2] 🏪 매장 추가/수정 시 호출하는 메서드 (중복 체크 제외)
-    // =========================================================================
+    
+    
+    
     public boolean validateBusiness(String bNo, String startDt, String pNm, String bNm, boolean isMultiProfile) {
         String cleanBNo = bNo.replaceAll("-", "");
         String cleanStartDt = startDt.replaceAll("-", "");
         
-        // 매장 추가/수정 시(isMultiProfile=true)에는 중복 체크를 하지 않습니다.
+        
         return executeNtsApi(cleanBNo, cleanStartDt, pNm, bNm, !isMultiProfile);
     }
 
-    // =========================================================================
-    // [방식 3] DTO 방식 (매장 추가 시 사용)
-    // =========================================================================
+    
+    
+    
     public boolean validateBusiness(BusinessMultiProfileDTO dto) {
         String cleanBNo = dto.getB_no().replaceAll("-", "");
         String cleanStartDt = dto.getStart_dt().replaceAll("-", "");
         
-        // DTO 방식은 주로 매장 추가용이므로 중복 체크를 생략합니다.
+        
         return executeNtsApi(cleanBNo, cleanStartDt, dto.getP_nm(), dto.getB_nm(), false);
     }
 
-    // =========================================================================
-    // [공통 핵심 로직]
-    // =========================================================================
+    
+    
+    
     private boolean executeNtsApi(String cleanBNo, String cleanStartDt, String pNm, String bNm, boolean checkDuplicate) {
-        // 1. [중복 체크] 필요한 경우에만 수행
+        
         if (checkDuplicate) {
             int count = memberDao.countByBizNo(cleanBNo);
             if (count > 0) {
@@ -74,7 +74,7 @@ public class BizValidationService {
             }
         }
         
-        // 2. 국세청 API URL 조립
+        
         URI uri = UriComponentsBuilder
                 .fromUriString("https://api.odcloud.kr/api/nts-businessman/v1/validate")
                 .queryParam("serviceKey", serviceKey)

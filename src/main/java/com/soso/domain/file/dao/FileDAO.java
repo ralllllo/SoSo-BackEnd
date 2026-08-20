@@ -24,9 +24,7 @@ public class FileDAO {
         return sqlSession.selectList(NAMESPACE + ".getFilesByUserAndCategory", params);
     }
 
-    /**
-     * 🏪 [멀티 프로필] 특정 매장(boardSeq)의 사진 목록 가져오기
-     */
+    
     public java.util.List<com.soso.domain.file.dto.FileSaveDto> getFilesByBoardSeqAndCategory(Integer boardSeq, String category) {
         java.util.Map<String, Object> params = new java.util.HashMap<>();
         params.put("boardSeq", boardSeq);

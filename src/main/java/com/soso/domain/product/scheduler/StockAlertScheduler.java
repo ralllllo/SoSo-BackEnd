@@ -26,26 +26,23 @@ public class StockAlertScheduler {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
 
-    /**
-     * 매일 오전 9시에 유통기한 임박 품목을 체크하여 ALERT 이력을 생성합니다.
-     * 기준: 유통기한이 7일 이내로 남은 배치
-     */
+    
     @Scheduled(cron = "0 0 9 * * *")
     @Transactional
     public void checkExpiringStock() {
-        // 1. 유통기한 임박 배치 조회
+        
         List<StockBatchDTO> expiringBatches = stockDAO.selectExpiringBatches();
 
         for (StockBatchDTO batch : expiringBatches) {
-            // 2. 현재 해당 품목의 마스터 정보 조회 (현재 총 재고 확인용)
-            // 배치의 storeSeq를 사용하여 조회합니다.
+            
+            
             StockDTO master = stockDAO.selectStockBySeq(batch.getStockSeq(), batch.getStoreSeq());
             
             if (master != null) {
-                // 3. ALERT 이력 생성
+                
                 StockHistoryDTO alertHistory = new StockHistoryDTO();
                 alertHistory.setStockSeq(batch.getStockSeq());
-                alertHistory.setStoreSeq(batch.getStoreSeq()); // 매장 코드 설정
+                alertHistory.setStoreSeq(batch.getStoreSeq()); 
                 alertHistory.setBatchSeq(batch.getBatchSeq());
                 alertHistory.setTransactionType("ALERT");
                 alertHistory.setChangeQuantity(0);
@@ -58,7 +55,7 @@ public class StockAlertScheduler {
                 
                 stockHistoryDAO.insertStockHistory(alertHistory);
 
-                // 유통기한 임박 실시간 알림 이벤트 발행
+                
                 eventPublisher.publishEvent(new NotificationEvent(
                     this, 
                     batch.getStoreSeq(), 

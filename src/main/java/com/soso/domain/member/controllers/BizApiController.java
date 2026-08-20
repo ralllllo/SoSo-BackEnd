@@ -26,7 +26,7 @@ public class BizApiController {
             @RequestParam String bNm,
             @RequestParam(required = false, defaultValue = "false") boolean isMultiProfile) {
 
-        // 🏪 매장 추가(멀티프로필)나 정보 수정 시에는 중복 체크를 하지 않도록 플래그를 전달합니다.
+        
         boolean isValid = bizValidationService.validateBusiness(bNo, startDt, pNm, bNm, isMultiProfile);
 
         if (isValid) {

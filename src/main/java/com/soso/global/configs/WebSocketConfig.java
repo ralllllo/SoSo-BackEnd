@@ -12,10 +12,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        // 프론트가 구독하는 주소
+        
         config.enableSimpleBroker("/sub");
 
-        // 프론트가 서버로 메시지 보낼 때 쓰는 주소
+        
         config.setApplicationDestinationPrefixes("/pub");
     }
 

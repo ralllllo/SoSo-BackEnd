@@ -13,10 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @file BoardController.java
- * @description 게시판 관련 API를 제공하는 컨트롤러입니다.
- */
+
 @RestController
 @RequestMapping("/api/boards")
 public class BoardController {
@@ -26,9 +23,7 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
-    /**
-     * 특정 타입의 게시글 목록 조회 API (NOTICE, TIP 등)
-     */
+    
     @GetMapping
     public ResponseEntity<Map<String, Object>> getBoardsByType(@RequestParam("type") String type) {
         logger.info("게시판 목록 조회 요청: type={}", type);
@@ -42,9 +37,7 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 특정 유저가 작성한 1:1 문의 목록 조회 API
-     */
+    
     @GetMapping("/my-inquiries")
     public ResponseEntity<Map<String, Object>> getMyInquiries(@RequestParam("userSeq") int userSeq) {
         logger.info("내 문의 목록 조회 요청: userSeq={}", userSeq);
@@ -58,9 +51,7 @@ public class BoardController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 1:1 문의 등록 API
-     */
+    
     @PostMapping("/inquiry")
     public ResponseEntity<Map<String, Object>> submitInquiry(@RequestBody BoardInsertRequestDto dto) {
         logger.info("1:1 문의 등록 요청: userSeq={}, csType={}", dto.getUserSeq(), dto.getCsType());

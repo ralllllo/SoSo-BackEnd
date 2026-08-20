@@ -44,48 +44,48 @@ public class AuthController {
 	public ResponseEntity<Map<String, Object>> toLogin(@RequestBody LoginDTO dto, HttpServletResponse response) {
 		
 		
-		// 로그인 시도
-	    // 아이디, 비밀번호가 맞으면 회원 정보(Map)를 반환
-	    // 틀리면 null 반환
+		
+	    
+	    
 	    Map<String, Object> member = LoginServ.toLogin(dto);
 	    
 		
 		if(member != null) { 
-			// [추가] 탈퇴 회원 응답 처리 (isWithDraw 상태면 바로 반환)
+			
 			if ("isWithDraw".equals(member.get("status"))) {
 				return ResponseEntity.ok(member);
 			}
 
-			// 프론트로 보낼 응답 데이터
+			
 			Map<String, Object> result = new HashMap<>();
 			
-			// JWT 토큰 생성
-			// ⭕ member.get()이 Integer든 Long이든 상관없이 문자열로 바꾼 뒤 깔끔하게 Long으로 추출!
+			
+			
 			Long userSeq = Long.parseLong(String.valueOf(member.get("user_seq")));
 			String userType = String.valueOf(member.get("user_type"));
 			String token = jwt.createToken(userSeq, userType);
 			
-			// Refresh Token 생성 및 Redis 저장
+			
 			String refreshToken = jwt.createRefreshToken(userSeq, userType);
 			redisService.setValuesWithTimeout("RT:" + userSeq, refreshToken, refreshExpiration);
 			
-			// Refresh Token 쿠키 발급
+			
 			ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
 					.maxAge(refreshExpiration / 1000)
 					.path("/")
-					.secure(true) // HTTPS (or localhost)
+					.secure(true) 
 					.sameSite("Strict")
 					.httpOnly(true)
 					.build();
 			response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 			
-			// 보안을 위해 프론트로 보내기 전 비밀번호 제거
+			
 			member.remove("password");
 			
-			// 응답 데이터 추가
-			result.put("token", token); // JWT 토큰
-			result.put("user_seq", userSeq); // 회원 id
-			result.put("user_type", member.get("user_type")); // 회원 유형
+			
+			result.put("token", token); 
+			result.put("user_seq", userSeq); 
+			result.put("user_type", member.get("user_type")); 
 			result.put("user_nickname", member.get("nickname"));
 			result.put("company_name", member.get("company_name"));
 			
@@ -97,7 +97,7 @@ public class AuthController {
 			
 			return ResponseEntity.ok(result);
 		}
-		// 정보가 틀리다면 토큰 인증 실패
+		
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 	}
 
@@ -111,30 +111,30 @@ public class AuthController {
 		}
 
 		try {
-			// Refresh Token 유효성 검증
+			
 			jwt.validation(refreshToken);
 			
 			Long userSeq = jwt.getUserSeq(refreshToken);
 			String userType = jwt.getUserType(refreshToken);
 			
-			// Redis 값과 대조
+			
 			String savedToken = redisService.getValues("RT:" + userSeq);
 			if (savedToken == null || !savedToken.equals(refreshToken)) {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			}
 			
-			// 새 Access Token 발급
+			
 			String newAccessToken = jwt.createToken(userSeq, userType);
 			
-			// 💡 새 Refresh Token 발급 및 Redis 갱신 (수명 연장)
+			
 			String newRefreshToken = jwt.createRefreshToken(userSeq, userType);
 			redisService.setValuesWithTimeout("RT:" + userSeq, newRefreshToken, refreshExpiration);
 			
-			// 💡 새 Refresh Token 쿠키 세팅
+			
 			ResponseCookie cookie = ResponseCookie.from("refreshToken", newRefreshToken)
 					.maxAge(refreshExpiration / 1000)
 					.path("/")
-					.secure(true) // HTTPS (or localhost)
+					.secure(true) 
 					.sameSite("Strict")
 					.httpOnly(true)
 					.build();
@@ -157,14 +157,14 @@ public class AuthController {
 				String token = authHeader.substring(7);
 				Long userSeq = jwt.getUserSeq(token);
 				
-				// Redis에서 삭제
+				
 				redisService.deleteValues("RT:" + userSeq);
 			} catch (Exception e) {
-				// 이미 만료된 토큰일 수 있으므로 예외 발생 시 무시하고 쿠키만 지움
+				
 			}
 		}
 		
-		// 쿠키 삭제
+		
 		ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
 				.maxAge(0)
 				.path("/")

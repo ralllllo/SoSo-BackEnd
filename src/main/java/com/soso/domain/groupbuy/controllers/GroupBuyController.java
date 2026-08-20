@@ -24,14 +24,14 @@ public class GroupBuyController {
     @Autowired
     private GroupBuyService groupBuyService;
 
-    // B. 공동구매 생성 API
+    
     @PostMapping
     public ResponseEntity<?> createGroupBuy(@RequestBody GroupBuyDTO groupBuyDTO,
                                             @RequestAttribute("userSeq") Integer userSeq,
                                             @RequestAttribute("userType") String userType) {
-        // 보안: 세션(RequestAttribute)에서 뽑은 userSeq를 무조건 강제 세팅
+        
         groupBuyDTO.setUserSeq(userSeq);
-        // 추가: 개설자 타입 세팅
+        
         groupBuyDTO.setCreatorType(userType);
         
         groupBuyService.createGroupBuy(groupBuyDTO);
@@ -39,7 +39,7 @@ public class GroupBuyController {
         return ResponseEntity.ok().body(Map.of("message", "공동구매가 성공적으로 등록되었습니다."));
     }
 
-    // C. 공동구매 목록 조회 API (?filter=my)
+    
     @GetMapping
     public ResponseEntity<List<GroupBuyDTO>> getGroupBuys(
             @RequestParam(required = false) String filter,
@@ -50,7 +50,7 @@ public class GroupBuyController {
         return ResponseEntity.ok(list);
     }
 
-    // 내가 참여한 공동구매 목록 조회 API
+    
     @GetMapping("/participated")
     public ResponseEntity<List<GroupBuyDTO>> getMyParticipatedGroups(
             @RequestAttribute("userSeq") Integer userSeq) {
@@ -59,7 +59,7 @@ public class GroupBuyController {
         return ResponseEntity.ok(list);
     }
 
-    // 내가 참여한 공동구매 중 완료(COMPLETED)된 목록 조회 API
+    
     @GetMapping("/completed")
     public ResponseEntity<List<GroupBuyDTO>> getMyCompletedGroups(
             @RequestAttribute("userSeq") Integer userSeq) {
@@ -68,7 +68,7 @@ public class GroupBuyController {
         return ResponseEntity.ok(list);
     }
 
-    // 내가 개설한 공동구매 목록 조회 API
+    
     @GetMapping("/created")
     public ResponseEntity<List<GroupBuyDTO>> getMyCreatedGroups(
             @RequestAttribute("userSeq") Integer userSeq) {
@@ -77,7 +77,7 @@ public class GroupBuyController {
         return ResponseEntity.ok(list);
     }
 
-    // 내가 참여한 공동구매 개수 조회 API
+    
     @GetMapping("/participated/count")
     public ResponseEntity<Map<String, Integer>> getMyParticipatedGroupsCount(
             @RequestAttribute("userSeq") Integer userSeq) {
@@ -86,7 +86,7 @@ public class GroupBuyController {
         return ResponseEntity.ok(Map.of("count", count));
     }
 
-    // 내가 개설한 공동구매 개수 조회 API
+    
     @GetMapping("/created/count")
     public ResponseEntity<Map<String, Integer>> getMyCreatedGroupsCount(
             @RequestAttribute("userSeq") Integer userSeq) {
@@ -95,7 +95,7 @@ public class GroupBuyController {
         return ResponseEntity.ok(Map.of("count", count));
     }
 
-    // 내가 개설한 완료(COMPLETED)된 공동구매 개수 조회 API
+    
     @GetMapping("/completed/count")
     public ResponseEntity<Map<String, Integer>> getCompletedGroupBuysCount(
             @RequestAttribute("userSeq") Integer userSeq) {
@@ -104,7 +104,7 @@ public class GroupBuyController {
         return ResponseEntity.ok(Map.of("count", count));
     }
 
-    // 공동구매 단건 상세 조회 API
+    
     @GetMapping("/{groupBuySeq}")
     public ResponseEntity<GroupBuyDTO> getGroupBuyDetail(@PathVariable("groupBuySeq") int groupBuySeq) {
         GroupBuyDTO detail = groupBuyService.getGroupBuyDetail(groupBuySeq);
@@ -114,7 +114,7 @@ public class GroupBuyController {
         return ResponseEntity.ok(detail);
     }
 
-    // D. 공동구매 참여 API
+    
     @PostMapping("/{groupBuySeq}/join")
     public ResponseEntity<?> joinGroupBuy(@PathVariable("groupBuySeq") int groupBuySeq,
                                           @RequestAttribute("userSeq") Integer userSeq) {
@@ -126,7 +126,7 @@ public class GroupBuyController {
         }
     }
 
-    // E. 그룹 상태 변경 API
+    
     @PatchMapping("/{groupBuySeq}/status")
     public ResponseEntity<?> updateGroupBuyStatus(@PathVariable("groupBuySeq") int groupBuySeq,
                                                   @RequestBody Map<String, String> requestBody,
@@ -141,7 +141,7 @@ public class GroupBuyController {
         }
     }
 
-    // F. 참여 멤버 및 배송 정보 리스트 조회 API
+    
     @GetMapping("/{groupBuySeq}/participants")
     public ResponseEntity<?> getParticipants(@PathVariable("groupBuySeq") int groupBuySeq,
                                              @RequestAttribute("userType") String userType) {

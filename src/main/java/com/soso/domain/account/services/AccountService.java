@@ -14,79 +14,60 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @file AccountService.java
- * @description 거래처 관련 비즈니스 로직을 처리하는 서비스 클래스입니다.
- */
+
 @Service
 public class AccountService {
 
     @Autowired
     private AccountDAO accountDAO;
 
-    /**
-     * 파트너사(거래처) 검색
-     */
+    
     public List<AccountSearchResponseDto> searchAccounts(String searchTerm) {
         return accountDAO.searchPartnerStores(searchTerm);
     }
 
-    /**
-     * 모든 파트너사(거래처) 조회 (필터 적용)
-     */
+    
     public List<AccountSearchResponseDto> getAllPartnerStores(String searchTerm, String city, String district) {
 
         return accountDAO.getAllPartnerStores(searchTerm, city, district);
     }
 
-    /**
-     * 거래처 관계 등록
-     */
+    
     @Transactional
     public boolean registerAccount(AccountRelationRequestDto relationDto) {
         return accountDAO.insertPartnerRelation(relationDto) > 0;
     }
 
-    /**
-     * 등록된 거래처 목록 조회 (필터 적용)
-     */
+    
     public List<AccountRelationResponseDto> getRegisteredAccounts(int businessSeq, String searchTerm, String city, String district) {
 
         return accountDAO.getPartnerRelationsByBusinessSeq(businessSeq, searchTerm, city, district);
 
     }
 
-    /**
-     * 거래처별 품목 목록 조회
-     */
+    
     public List<ItemResponseDto> getPartnerItems(int partnerSeq) {
         return accountDAO.getItemsByPartnerSeq(partnerSeq);
     }
 
-    /**
-     * 거래처 관계 삭제
-     */
+    
     @Transactional
     public boolean deleteAccount(int relationSeq) {
         return accountDAO.deletePartnerRelation(relationSeq) > 0;
     }
 
-    /**
-     * 유저의 첫 번째 매장 시퀀스 조회
-     */
+    
     public Integer getFirstStoreSeqByUserSeq(int userSeq) {
         return accountDAO.getFirstStoreSeqByUserSeq(userSeq);
     }
 
     
- // 내가 등록한 거래처 목록 조회
+ 
     public List<AccountSearchResponseDto> myPartners(Long storeSeq) {
         return accountDAO.myPartners(storeSeq);
     }
 
-    /**
-     * 특정 거래처(파트너사) 상세 정보 조회
-     */
+    
     public AccountSearchResponseDto getPartnerDetail(int partnerSeq) {
         return accountDAO.getPartnerDetail(partnerSeq);
 

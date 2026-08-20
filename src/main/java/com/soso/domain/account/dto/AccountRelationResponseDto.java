@@ -3,10 +3,7 @@ package com.soso.domain.account.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-/**
- * @file AccountRelationResponseDto.java
- * @description 등록된 거래처(관계) 정보를 반환하기 위한 DTO입니다.
- */
+
 public class AccountRelationResponseDto {
     private int relationSeq;
     private int businessSeq;
@@ -14,7 +11,7 @@ public class AccountRelationResponseDto {
     private String memo;
     private LocalDateTime createdAt;
     
-    // 거래처 매장 정보
+    
     private String companyName;
     private String bizNumber;
     private String ceoName;

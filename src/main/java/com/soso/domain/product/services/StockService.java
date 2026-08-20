@@ -36,7 +36,7 @@ public class StockService {
     }
 
     public void createStock(int storeSeq,StockDTO stock) {
-        // 동일한 품목명(stock_name) 중복 검사 로직 추가
+        
         int count = stockDAO.checkDuplicateStockName(storeSeq, stock.getStockName());
         if (count > 0) {
             throw new IllegalArgumentException("이미 존재하는 품목명입니다.");
@@ -55,17 +55,17 @@ public class StockService {
             throw new RuntimeException("존재하지 않는 품목입니다.");
         }
         
-        // 1. 유통기한 자동 계산
+        
         LocalDate expDate = incoming.getExpirationDate();
         if (expDate == null) {
             expDate = LocalDate.now().plusDays(master.getDefaultExpiryDays());
         }
 
-        // 2. 로트 번호 생성 (LOT-YYYYMMDD-[stockSeq]-[랜덤3자리])
+        
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String lotNumber = String.format("LOT-%s-%d-%03d", today, master.getStockSeq(), new Random().nextInt(1000));
 
-        // 3. 배치 등록
+        
         StockBatchDTO batch = new StockBatchDTO();
         batch.setStockSeq(incoming.getStockSeq());
         batch.setStoreSeq(storeSeq);
@@ -77,10 +77,10 @@ public class StockService {
         batch.setExpirationDate(expDate);
         stockDAO.insertBatch(batch);
 
-        // 4. 마스터 총재고 업데이트
+        
         updateMasterStock(incoming.getStockSeq(), incoming.getQuantity(), storeSeq);
 
-        // 5. 이력 기록
+        
         StockDTO updatedMaster = stockDAO.selectStockBySeq(incoming.getStockSeq(), storeSeq);
         StockHistoryDTO history = new StockHistoryDTO();
         history.setStockSeq(incoming.getStockSeq());
@@ -95,10 +95,10 @@ public class StockService {
         history.setReason(incoming.getReason());
         history.setMemo(incoming.getMemo());
         stockDAO.insertHistory(history);
-        // 재고 이력 RAG upsert
+        
         upsertStockHistoryRag(history, updatedMaster, storeSeq);
 
-        // 현재 재고 RAG upsert
+        
         upsertStockRag(updatedMaster, storeSeq);
     }
 
@@ -106,7 +106,7 @@ public class StockService {
     public void processOutbound(StockOutboundRequest request, int storeSeq) {
         int remainingToOut = request.getQuantity();
         
-        // 1. FIFO 기준 배치 조회 (유통기한 임박순)
+        
         List<StockBatchDTO> batches = stockDAO.selectAvailableBatches(request.getStockSeq(), storeSeq);
         
         if (batches.isEmpty() || batches.stream().mapToInt(StockBatchDTO::getCurrentQuantity).sum() < remainingToOut) {
@@ -118,16 +118,16 @@ public class StockService {
 
             int deductQty = Math.min(batch.getCurrentQuantity(), remainingToOut);
             
-            // 2. 배치 수량 차감
+            
             batch.setCurrentQuantity(batch.getCurrentQuantity() - deductQty);
             stockDAO.updateBatchQuantity(batch);
             
             remainingToOut -= deductQty;
             
-            // 3. 마스터 총재고 차감
+            
             updateMasterStock(request.getStockSeq(), -deductQty, storeSeq);
             
-            // 4. 이력 기록
+            
             StockDTO currentMaster = stockDAO.selectStockBySeq(request.getStockSeq(), storeSeq);
             StockHistoryDTO history = new StockHistoryDTO();
             history.setStockSeq(request.getStockSeq());
@@ -142,11 +142,11 @@ public class StockService {
             history.setExpirationDate(batch.getExpirationDate());
             history.setPrice(batch.getIncomingPrice());
             stockDAO.insertHistory(history);
-            // 재고 이력 RAG upsert
+            
             upsertStockHistoryRag(history, currentMaster, storeSeq);
         }
 
-        // 5. 안전재고 미달 체크 (ALERT) 및 실시간 알림 발행
+        
         StockDTO finalMaster = stockDAO.selectStockBySeq(request.getStockSeq(), storeSeq);
         if (finalMaster != null && finalMaster.getCurrentStock() < finalMaster.getSafetyStock()) {
             StockHistoryDTO alertHistory = new StockHistoryDTO();
@@ -160,7 +160,7 @@ public class StockService {
             alertHistory.setMemo("현재 " + finalMaster.getCurrentStock() + "개 - 안전 재고 미만");
             stockHistoryDAO.insertStockHistory(alertHistory);
 
-            // 알림 이벤트 발행
+            
             eventPublisher.publishEvent(new NotificationEvent(
                 this, 
                 storeSeq, 
@@ -170,7 +170,7 @@ public class StockService {
                     finalMaster.getStockName(), finalMaster.getSafetyStock(), finalMaster.getCurrentStock())
             ));
 
-            // 파트너(거래처)로도 알림 발행
+            
             publishPartnerSafetyAlert(storeSeq, finalMaster);
         }
         upsertStockRag(finalMaster, storeSeq);
@@ -178,7 +178,7 @@ public class StockService {
 
     @Transactional
     public void processAdjust(StockAdjustRequest request, int storeSeq) {
-        // 1. 특정 배치 조정 시
+        
         if (request.getBatchSeq() != null && request.getBatchSeq() > 0) {
             List<StockBatchDTO> batches = stockDAO.selectBatchesByStockSeq(request.getStockSeq(), storeSeq);
             StockBatchDTO targetBatch = batches.stream()
@@ -193,10 +193,10 @@ public class StockService {
             stockDAO.updateBatchQuantity(targetBatch);
         }
 
-        // 2. 마스터 업데이트
+        
         updateMasterStock(request.getStockSeq(), request.getChangeQuantity(), storeSeq);
         
-        // 3. 이력 기록
+        
         StockDTO currentMaster = stockDAO.selectStockBySeq(request.getStockSeq(), storeSeq);
         if (currentMaster.getCurrentStock() < 0) {
              throw new RuntimeException("조정 후 총 재고가 0보다 작을 수 없습니다.");
@@ -212,10 +212,10 @@ public class StockService {
         history.setReason(request.getReason());
         history.setMemo(request.getMemo());
         stockDAO.insertHistory(history);
-        // 재고 이력 RAG upsert
+        
         upsertStockHistoryRag(history, currentMaster, storeSeq);
 
-        // 안전재고 미달 체크 및 실시간 알림 발행
+        
         if (currentMaster != null && currentMaster.getCurrentStock() < currentMaster.getSafetyStock()) {
             eventPublisher.publishEvent(new NotificationEvent(
                 this, 
@@ -226,7 +226,7 @@ public class StockService {
                     currentMaster.getStockName(), currentMaster.getSafetyStock(), currentMaster.getCurrentStock())
             ));
 
-            // 파트너(거래처)로도 알림 발행
+            
             publishPartnerSafetyAlert(storeSeq, currentMaster);
         }
         upsertStockRag(currentMaster, storeSeq);
@@ -244,25 +244,19 @@ public class StockService {
         return stockDAO.selectBatchesByStockSeq(stockSeq, storeSeq);
     }
 
-    /**
-     * [초보자 가이드 - 파트너 안전재고 부족 알림 발행]
-     * 기능: 가맹점의 재고가 안전재고 수량 미만으로 떨어졌을 때, 가맹점과 거래 중인 파트너(거래처)들의 대시보드로
-     *      실시간 "안전재고 부족" 알림(SAFETY_LACK)을 동시에 발행해주는 헬퍼 메소드입니다.
-     * @param businessStoreSeq 재고가 부족해진 소상공인 가맹점 매장 번호 (stores.store_seq)
-     * @param master 재고 부족이 발생한 품목의 마스터 DTO 객체 (품목명, 현재고 등)
-     */
+    
     private void publishPartnerSafetyAlert(int businessStoreSeq, StockDTO master) {
         try {
-            // 1. 재고가 부족한 가맹점 매장의 상호명(예: 교촌치킨 옥길점)을 조회
+            
             String companyName = notificationDAO.selectCompanyNameByStoreSeq(businessStoreSeq);
             if (companyName == null || companyName.isEmpty()) {
                 companyName = "가맹점";
             }
             
-            // 2. 가맹점과 거래 관계가 맺어진 파트너(거래처)들의 매장 일련번호 목록을 조회
+            
             List<Integer> partnerSeqs = notificationDAO.selectPartnerStoreSeqsByBusinessSeq(businessStoreSeq);
             if (partnerSeqs != null) {
-                // 3. 각 파트너(거래처)들을 순회하며 각각의 알림 채널로 실시간 알림 이벤트를 전송
+                
                 for (Integer partnerStoreSeq : partnerSeqs) {
                     eventPublisher.publishEvent(new NotificationEvent(
                         this,
@@ -291,11 +285,11 @@ public class StockService {
 
     @Transactional
     public void deleteStock(int stockSeq, int storeSeq) {
-        // 1. 연관된 이력 삭제
+        
         stockDAO.deleteHistoryByStockSeq(stockSeq, storeSeq);
-        // 2. 연관된 배치 삭제
+        
         stockDAO.deleteBatchesByStockSeq(stockSeq, storeSeq);
-        // 3. 품목 마스터 삭제
+        
         stockDAO.deleteStock(stockSeq, storeSeq);
     }
     public int getcountExpiringSoon(Map<String, Object> filters) {
@@ -305,7 +299,7 @@ public class StockService {
         return stockDAO.selectgetcountExpiringSoon(storeSeq);
     }
     
-    // 재고 RAG upsert
+    
     private void upsertStockRag(StockDTO stock, int storeSeq) {
         try {
             if (stock == null) {
@@ -344,7 +338,7 @@ public class StockService {
         }
     }
     
-    // rag 단위 정리 메서드 
+    
     private String normalizeUnitForRag(String unit) {
         if (unit == null || unit.isBlank()) {
             return "개";
@@ -352,11 +346,11 @@ public class StockService {
 
         String trimmed = unit.trim();
 
-        // 1개, 1판, 1박스 같은 단위는 챗봇 문장에서는 개/판/박스로 표현
+        
         if (trimmed.startsWith("1") && trimmed.length() > 1) {
             char secondChar = trimmed.charAt(1);
 
-            // 10kg, 100g 같은 단위는 자르면 안 되므로 두 번째 글자가 숫자면 그대로 사용
+            
             if (!Character.isDigit(secondChar)) {
                 return trimmed.substring(1);
             }
@@ -367,7 +361,7 @@ public class StockService {
     
     
     
-    // 재고 이력 RAG upsert
+    
     private void upsertStockHistoryRag(StockHistoryDTO history, StockDTO stock, int storeSeq) {
         try {
             if (history == null) {

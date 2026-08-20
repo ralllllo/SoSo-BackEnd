@@ -32,9 +32,7 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
-    /**
-     * 아이디 중복 체크 API
-     */
+    
     @GetMapping("/check-id")
     public ResponseEntity<Map<String, Object>> checkId(@RequestParam("userId") String userId) {
         logger.info("아이디 중복 체크 요청: {}", userId);
@@ -47,9 +45,7 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 닉네임 중복 체크 API
-     */
+    
     @GetMapping("/check-nickname")
     public ResponseEntity<Map<String, Object>> checkNickname(@RequestParam("nickname") String nickname) {
         logger.info("닉네임 중복 체크 요청: {}", nickname);
@@ -62,9 +58,7 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 이메일 중복 체크 API
-     */
+    
     @GetMapping("/check-email")
     public ResponseEntity<Map<String, Object>> checkEmail(@RequestParam("email") String email) {
         logger.info("이메일 중복 체크 요청: {}", email);
@@ -77,9 +71,7 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 사업자 회원가입 API
-     */
+    
     @PostMapping("/signup")
     public ResponseEntity<Map<String, String>> signUp(
             @RequestPart("joinData") String joinData,
@@ -101,17 +93,15 @@ public class MemberController {
 
         } catch (Exception e) {
             logger.error("회원가입 처리 중 오류 발생: {}", e.getMessage());
-            // 상세한 에러 처리는 GlobalExceptionHandler에서 수행하겠지만, 
-            // 여기서는 간단히 에러 메시지만 담아 반환 (필요 시 throw e 하여 Handler가 처리하게 할 수 있음)
+            
+            
             response.put("status", "error");
             response.put("message", e.getMessage());
             return ResponseEntity.badRequest().body(response);
         }
     }
     
-    /**
-     * 비밀번호 변경 API
-     */
+    
     @PostMapping("/change-password")
     public ResponseEntity<Map<String, Object>> changePassword(
             @RequestAttribute("user_seq") Long userSeq,

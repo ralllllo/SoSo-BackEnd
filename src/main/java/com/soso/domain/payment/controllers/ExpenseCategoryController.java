@@ -26,7 +26,7 @@ public class ExpenseCategoryController {
 	@Autowired
 	private ExpenseCategoryService ExpenseServ;
 	
-	// 지출 비용 등록
+	
 	@PostMapping("/{storeSeq}")
 	public ResponseEntity<Map<String, Object>> insertCategory(@PathVariable Integer storeSeq, @RequestBody ExpensesDTO dto) {
 		
@@ -46,7 +46,7 @@ public class ExpenseCategoryController {
 			return ResponseEntity.badRequest().body(response);
 	}
 	
-	// 월별 총 지출 비용 출력
+	
 	@GetMapping("/{storeSeq}/total")
 	public ResponseEntity<Map<String, Object>> monthlyTotal(@PathVariable Integer storeSeq, @RequestParam String month) {
 		
@@ -58,7 +58,7 @@ public class ExpenseCategoryController {
 		return ResponseEntity.ok(response);
 	}
 	
-	// 월별 카테고리별 비용 출력
+	
 	@GetMapping("/{storeSeq}/categoryCost")
 	public ResponseEntity<List<Map<String, Object>>> categoryCost(@PathVariable int storeSeq, @RequestParam String month) {
 
@@ -66,7 +66,7 @@ public class ExpenseCategoryController {
 	    return ResponseEntity.ok(result);
 	}
 	
-	// 카테고리별 월 지출 세부내역 출력
+	
 	@GetMapping("/{storeSeq}/details")
 	public ResponseEntity<List<ExpensesDTO>> expenseDetails(
 	        @PathVariable int storeSeq,
@@ -78,7 +78,7 @@ public class ExpenseCategoryController {
 	    return ResponseEntity.ok(result);
 	}
 	
-	// 비용 등록 모달 - 거래처별 일반 발주 내역 전체 조회
+	
 	@GetMapping("/{storeSeq}/general-orders")
 	public ResponseEntity<List<Map<String, Object>>> generalOrdersForExpense(
 	        @PathVariable int storeSeq,
@@ -90,7 +90,7 @@ public class ExpenseCategoryController {
 	    return ResponseEntity.ok(result);
 	}
 	
-	// 지출 내역 메모 수정
+	
 			@PutMapping("/{storeSeq}/{expenseSeq}/memo")
 			public ResponseEntity<Map<String, Object>> updateExpenseMemo(
 			        @PathVariable Long storeSeq,
@@ -116,7 +116,7 @@ public class ExpenseCategoryController {
 			}
 			
 			
-			// 지출 내역 삭제
+			
 			@DeleteMapping("/{storeSeq}/{expenseSeq}")
 			public ResponseEntity<Map<String, Object>> deleteExpense(
 			        @PathVariable Long storeSeq,

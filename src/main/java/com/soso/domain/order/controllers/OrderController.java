@@ -28,7 +28,7 @@ public class OrderController {
 	@Autowired
 	private OrderService OrderServ;
 
-	// 사업자 재고 비교
+	
 	@GetMapping("/check")
 	public ResponseEntity<List<OrderRecommendDTO>> recommendStock(
 			@RequestParam("itemName") String itemName,
@@ -40,7 +40,7 @@ public class OrderController {
 		return ResponseEntity.ok(recommendList);
 	}
 
-	// 거래처 품목 목록
+	
 	@GetMapping("/items")
 	public ResponseEntity<List<OrderItemDTO>> compareItem(OrderItemDTO dto) {
 
@@ -49,7 +49,7 @@ public class OrderController {
 		return ResponseEntity.ok(list);
 	}
 
-	// 사업자명과 주소
+	
 	@GetMapping("/identity")
 	public ResponseEntity<Map<String, Object>> identityCheck(@RequestParam("storeSeq") Long storeSeq) {
 
@@ -58,12 +58,12 @@ public class OrderController {
 		return ResponseEntity.ok(identity);
 	}
 
-	// 발주서 작성
+	
 	@PostMapping("/form")
 	public ResponseEntity<Integer> orderForm(@RequestBody OrderDTO dto, HttpServletRequest request) {
 
-		// buyerSeq는 프론트에서 보낸 현재 선택 매장의 storeSeq를 사용
-		// 여기서 user_seq로 덮어쓰면 안 됨
+		
+		
 		if (dto.getBuyerSeq() == null) {
 			return ResponseEntity.badRequest().body(0);
 		}
@@ -77,14 +77,14 @@ public class OrderController {
 		return ResponseEntity.ok(result);
 	}
 
-	// 발주 신청시 공급업체 목록 조회
+	
 	@GetMapping("/suppliers")
 	public ResponseEntity<List<OrderItemDTO>> suppliers() {
 		List<OrderItemDTO> list = OrderServ.suppliers();
 		return ResponseEntity.ok(list);
 	}
 
-	// 발주서 목록으로 출력 + 검색 및 필터링 기능
+	
 	@GetMapping("/list")
 	public ResponseEntity<List<OrderListDTO>> orderList(
 			@RequestParam("storeSeq") Long storeSeq,
@@ -104,14 +104,14 @@ public class OrderController {
 		return ResponseEntity.ok(orderList);
 	}
 
-	// 발주서 상세 내역 조회
+	
 	@GetMapping("/list/{orderSeq}")
 	public ResponseEntity<Map<String, Object>> getOrderDetail(@PathVariable Long orderSeq) {
 		Map<String, Object> detail = OrderServ.getOrderDetail(orderSeq);
 		return ResponseEntity.ok(detail);
 	}
 
-	// 웹소켓 사용자 확인
+	
 	@GetMapping("/me")
 	public ResponseEntity<Long> webSocketMe(HttpServletRequest request) {
 
@@ -120,9 +120,9 @@ public class OrderController {
 		return ResponseEntity.ok(webSocketMe);
 	}
 
-	// 웹소켓 테스트 API
-	// 거래처가 상태 변경 버튼을 누른 것처럼 테스트하는 API
-	// 예: POST /order/test/status/1?status=ACCEPTED
+	
+	
+	
 	@PostMapping("/test/status/{orderSeq}")
 	public ResponseEntity<String> testUpdateOrderStatus(@PathVariable Long orderSeq, @RequestParam String status) {
 		OrderServ.updateOrderStatus(orderSeq, status);

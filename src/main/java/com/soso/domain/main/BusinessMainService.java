@@ -12,14 +12,11 @@ public class BusinessMainService {
     @Autowired
     private BusinessMainDAO businessMainDAO;
 
-    /**
-     * [소상공인 대시보드 API 서비스]
-     * 데이터베이스(soso2.sql)의 실 거래 데이터에 기반한 소상공인 대시보드 지표 및 그래프 데이터 조회
-     */
+    
     public Map<String, Object> getDashboardData(int storeSeq, long userSeq) {
         Map<String, Object> data = new HashMap<>();
 
-        // 1. KPI 카드 데이터
+        
         int totalStocks = businessMainDAO.selectTotalStocksCount(storeSeq);
         int lackStocks = businessMainDAO.selectLackStocksCount(storeSeq);
         int expiringSoon = businessMainDAO.selectExpiringSoonCount(storeSeq);
@@ -30,14 +27,14 @@ public class BusinessMainService {
         data.put("expiringSoon", expiringSoon);
         data.put("activeGroupBuys", activeGroupBuys);
 
-        // 2. 현재 재고 현황 (Bar Chart 데이터)
+        
         List<Map<String, Object>> stockStatus = businessMainDAO.selectCurrentStockStatus(storeSeq);
         data.put("stockStatus", stockStatus);
 
-        // 3. 월별 매출 현황 (Line Chart 데이터)
+        
         List<Map<String, Object>> salesRaw = businessMainDAO.selectMonthlySales(userSeq);
         
-        // 월별 매출 데이터 병합 (최근 6개월)
+        
         Map<String, Integer> mergeSalesMap = new java.util.LinkedHashMap<>();
         java.time.LocalDate now = java.time.LocalDate.now();
         for (int i = 5; i >= 0; i--) {
@@ -65,7 +62,7 @@ public class BusinessMainService {
         }
         data.put("salesTrend", salesTrendList);
 
-        // 4. 공동 발주 목록 가공
+        
         Map<String, Object> groupParams = new HashMap<>();
         groupParams.put("userSeq", userSeq);
         List<Map<String, Object>> groupRaw = businessMainDAO.selectGroupOrders(groupParams);

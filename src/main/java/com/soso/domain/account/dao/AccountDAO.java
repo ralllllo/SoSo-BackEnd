@@ -12,10 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @file AccountDAO.java
- * @description 거래처 관련 DB 접근을 담당하는 DAO 클래스입니다.
- */
+
 @Repository
 public class AccountDAO {
 
@@ -24,16 +21,12 @@ public class AccountDAO {
 
     private static final String NAMESPACE = "com.soso.domain.account.dao.AccountDAO";
 
-    /**
-     * 업체명 또는 사업자 번호로 PARTNER 타입 회원의 매장 정보를 조회합니다.
-     */
+    
     public List<AccountSearchResponseDto> searchPartnerStores(String searchTerm) {
         return mybatis.selectList(NAMESPACE + ".searchPartnerStores", searchTerm);
     }
 
-    /**
-     * 모든 PARTNER 타입 회원의 매장 정보를 조회합니다. (필터 적용)
-     */
+    
     public List<AccountSearchResponseDto> getAllPartnerStores(String searchTerm, String city, String district) {
         java.util.Map<String, Object> params = new java.util.HashMap<>();
         params.put("searchTerm", searchTerm);
@@ -42,16 +35,12 @@ public class AccountDAO {
         return mybatis.selectList(NAMESPACE + ".getAllPartnerStores", params);
     }
 
-    /**
-     * 거래처 관계 정보를 저장합니다.
-     */
+    
     public int insertPartnerRelation(AccountRelationRequestDto relationDto) {
         return mybatis.insert(NAMESPACE + ".insertPartnerRelation", relationDto);
     }
 
-    /**
-     * 특정 사업장(소상공인)의 등록된 거래처 목록을 조회합니다. (필터 적용)
-     */
+    
     public List<AccountRelationResponseDto> getPartnerRelationsByBusinessSeq(int businessSeq, String searchTerm, String city, String district) {
         java.util.Map<String, Object> params = new java.util.HashMap<>();
         params.put("businessSeq", businessSeq);
@@ -61,40 +50,30 @@ public class AccountDAO {
         return mybatis.selectList(NAMESPACE + ".getPartnerRelationsByBusinessSeq", params);
     }
 
-    /**
-     * 특정 거래처(PARTNER)가 보유한 품목 목록을 조회합니다.
-     */
+    
     public List<ItemResponseDto> getItemsByPartnerSeq(int partnerSeq) {
         return mybatis.selectList(NAMESPACE + ".getItemsByPartnerSeq", partnerSeq);
     }
 
-    /**
-     * 특정 거래처(PARTNER)의 상세 정보를 조회합니다.
-     */
+    
 
-    /**
-     * 거래처 관계 정보를 삭제합니다.
-     */
+    
     public int deletePartnerRelation(int relationSeq) {
         return mybatis.delete(NAMESPACE + ".deletePartnerRelation", relationSeq);
     }
 
-    /**
-     * 특정 유저(userSeq)의 첫 번째 매장(storeSeq)을 조회합니다.
-     */
+    
     public Integer getFirstStoreSeqByUserSeq(int userSeq) {
         return mybatis.selectOne(NAMESPACE + ".getFirstStoreSeqByUserSeq", userSeq);
     }
 
     
- // 내가 등록한 거래처 목록 조회
+ 
     public List<AccountSearchResponseDto> myPartners(Long storeSeq) {
         return mybatis.selectList(NAMESPACE + ".myPartners", storeSeq);
     }
 
-    /**
-     * 특정 거래처(파트너사) 상세 정보를 조회합니다.
-     */
+    
     public AccountSearchResponseDto getPartnerDetail(int partnerSeq) {
         return mybatis.selectOne(NAMESPACE + ".getPartnerDetail", partnerSeq);
 

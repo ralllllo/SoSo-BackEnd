@@ -23,10 +23,7 @@ public class MainController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * [API] 소상공인 대시보드 데이터 조회 (실제 데이터 기반)
-     * 요청 예: GET /api/business/dashboard?storeSeq=9&userSeq=3
-     */
+    
     @GetMapping("/api/business/dashboard")
     public ResponseEntity<Map<String, Object>> getBusinessDashboard(
             @RequestParam int storeSeq,

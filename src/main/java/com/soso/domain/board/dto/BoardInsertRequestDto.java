@@ -1,13 +1,10 @@
 package com.soso.domain.board.dto;
 
-/**
- * @file BoardInsertRequestDto.java
- * @description 새로운 게시글(문의 등)을 등록할 때 사용하는 DTO입니다.
- */
+
 public class BoardInsertRequestDto {
     private int userSeq;
-    private String boardType; // 'CS', 'NOTICE', 'TIP' 등
-    private String csType;    // 'PAY', 'SERVICE', 'ACCOUNT', 'BUG'
+    private String boardType; 
+    private String csType;    
     private String title;
     private String content;
 

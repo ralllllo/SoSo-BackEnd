@@ -25,45 +25,45 @@ public class DBTool {
 
         sql = sql.trim();
 
-        // SQL 맨 끝에 붙은 세미콜론 1개는 제거
+        
         if (sql.endsWith(";")) {
             sql = sql.substring(0, sql.length() - 1).trim();
         }
 
         String checkSql = sql.toLowerCase();
 
-        // 1. SELECT만 허용
+        
         if (!checkSql.startsWith("select")) {
             return "오류: SELECT 문만 실행할 수 있습니다.";
         }
 
-        // 2. 중간 세미콜론은 다중 SQL 가능성이 있으므로 차단
+        
         if (checkSql.contains(";")) {
             return "오류: 세미콜론을 포함한 다중 SQL은 실행할 수 없습니다.";
         }
 
-        // 3. SQL 주석 차단
+        
         if (checkSql.contains("--") || checkSql.contains("/*") || checkSql.contains("*/")) {
             return "오류: SQL 주석은 사용할 수 없습니다.";
         }
 
-        // 4. 위험한 SQL 키워드 차단
-        // created_at, updated_at 같은 컬럼명이 막히지 않도록 단어 단위로 검사
+        
+        
         if (checkSql.matches(".*\\b(insert|update|delete|drop|create|alter|truncate)\\b.*")) {
             return "오류: 데이터 변경 SQL은 실행할 수 없습니다.";
         }
 
-        // 5. VIEW만 조회 허용
+        
         if (!checkSql.contains("view_")) {
             return "오류: 챗봇용 VIEW만 조회할 수 있습니다.";
         }
 
-        // 6. 민감 정보 차단
+        
         if (checkSql.contains("billing_key")) {
             return "오류: billing_key는 조회할 수 없습니다.";
         }
 
-        // 7. 너무 많은 데이터 방지
+        
         if (!checkSql.contains("limit")) {
             sql = sql + " LIMIT 30";
         }

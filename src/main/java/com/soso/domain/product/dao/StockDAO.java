@@ -22,7 +22,7 @@ public class StockDAO {
     }
 
     public void insertStock(int storeSeq, StockDTO stock) {
-    	//
+    	
     	stock.setStoreSeq(storeSeq); 
     	
         sqlSession.insert(NAMESPACE + "insertStock", stock);

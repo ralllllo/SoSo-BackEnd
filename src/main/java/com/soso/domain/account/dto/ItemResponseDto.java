@@ -1,9 +1,6 @@
 package com.soso.domain.account.dto;
 
-/**
- * @file ItemResponseDto.java
- * @description 품목 정보를 반환하기 위한 DTO입니다.
- */
+
 public class ItemResponseDto {
     private int itemSeq;
     private int categorySeq;

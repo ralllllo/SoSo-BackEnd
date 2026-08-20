@@ -7,19 +7,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.soso.global.common.TokenValidator;
 
-//TokenValidator를 실제로 적용시키는 설정 파일
+
 @Configuration
 public class InterceptorConfig implements WebMvcConfigurer{
 	
 	@Autowired
 	private TokenValidator Interceptor;
 	
-	// Dispatcher랑 Controller 사이에 interceptor 설치
+	
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		// 스프링 설정 클래스
-		// 의미 : 모든 요청에 TokenValidator 적용  단, /auth/login은 제외
-		// 그래서 로그인은 토큰 없이 가능하고, 나머지는 토큰 필요.
+		
+		
+		
 		registry.addInterceptor(Interceptor)
 		.addPathPatterns("/**") 
 		.excludePathPatterns("/auth/**", "/api/member/check-*", "/api/member/signup", "/api/biz/**", "/find/**");

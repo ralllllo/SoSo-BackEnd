@@ -2,10 +2,7 @@ package com.soso.domain.order.dto;
 
 import java.util.Date;
 
-/**
- * [거래처용 발주 목록 DTO]
- * 거래처(Partner) 사장님이 자신에게 들어온 전체 주문 리스트를 볼 때 사용하는 클래스입니다.
- */
+
 public class PartnerOrderListDTO {
     private Long orderSeq;
     private String orderNo;
@@ -14,7 +11,7 @@ public class PartnerOrderListDTO {
     private String status;
     private Date createdAt;
     
-    // 추가된 주소 및 메모 필드
+    
     private String zonecode;
     private String address1;
     private String address2;

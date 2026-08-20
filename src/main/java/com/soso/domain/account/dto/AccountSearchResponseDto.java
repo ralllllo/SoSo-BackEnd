@@ -2,11 +2,7 @@ package com.soso.domain.account.dto;
 
 import java.time.LocalDate;
 
-/**
- * @file AccountSearchResponseDto.java
- * @description 거래처(PARTNER 유저의 매장) 정보를 반환하기 위한 DTO입니다.
- * Lombok을 사용하지 않고 생성자와 Getter/Setter를 직접 구현했습니다.
- */
+
 public class AccountSearchResponseDto {
     private int storeSeq;
     private int userSeq;
@@ -17,14 +13,14 @@ public class AccountSearchResponseDto {
     private Integer zonecode;
     private String address1;
     private String address2;
-    private String phone;  // 전화번호 추가
-    private String email;  // 이메일 추가
+    private String phone;  
+    private String email;  
 
-    // 기본 생성자
+    
     public AccountSearchResponseDto() {
     }
 
-    // 기존 필드를 포함한 생성자
+    
     public AccountSearchResponseDto(int storeSeq, int userSeq, String bizNumber, String companyName, 
                                    String ceoName, LocalDate openingDate, Integer zonecode, 
                                    String address1, String address2) {
@@ -39,7 +35,7 @@ public class AccountSearchResponseDto {
         this.address2 = address2;
     }
 
-    // 모든 필드를 포함한 생성자
+    
     public AccountSearchResponseDto(int storeSeq, int userSeq, String bizNumber, String companyName, 
                                    String ceoName, LocalDate openingDate, Integer zonecode, 
                                    String address1, String address2, String phone, String email) {
@@ -56,7 +52,7 @@ public class AccountSearchResponseDto {
         this.email = email;
     }
 
-    // Getter 및 Setter
+    
     public int getStoreSeq() {
         return storeSeq;
     }

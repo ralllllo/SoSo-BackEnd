@@ -1,22 +1,22 @@
 package com.soso.domain.mypage.dto;
 
 public class PartnerUpdateDTO {
-    // User 필드
+    
     private String nickname;
     private String phone;
     private String email;
     
-    // Store 필드
+    
     private Integer zonecode;
     private String address1;
     private String address2;
     
-    // 식별용
+    
     private Integer userSeq;
 
     public PartnerUpdateDTO() {}
 
-    // Getters and Setters
+    
     public String getNickname() { return nickname; }
     public void setNickname(String nickname) { this.nickname = nickname; }
 

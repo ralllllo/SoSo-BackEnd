@@ -13,16 +13,12 @@ import com.soso.domain.order.dto.PartnerOrderListDTO;
 import com.soso.domain.notification.events.NotificationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
-/**
- * [거래처 전용 발주 관리 서비스]
- * 초보자 가이드: Service는 '비즈니스 로직'을 처리하는 곳입니다.
- * 지금은 단순 조회지만, 나중에는 '재고 차감'이나 '알림 발송' 같은 복잡한 일을 여기서 처리하게 됩니다.
- */
+
 @Service
 public class PartnerOrderService {
 
     @Autowired
-    private PartnerOrderDAO partnerOrderDAO; // DAO 심부름꾼 주입
+    private PartnerOrderDAO partnerOrderDAO; 
 
     @Autowired
     private OrderDAO orderDAO;
@@ -31,43 +27,36 @@ public class PartnerOrderService {
     private ApplicationEventPublisher eventPublisher;
 
     @Autowired
-    private SimpMessagingTemplate messagingTemplate; // 웹소켓 알림을 보내는 도구
+    private SimpMessagingTemplate messagingTemplate; 
 
-    /**
-     * 거래처 사장님 앞으로 들어온 발주 목록을 가져옵니다. (검색 및 필터 포함)
-     */
+    
     public List<PartnerOrderListDTO> getOrderList(Long sellerSeq, String keyword, String status) {
         return partnerOrderDAO.selectOrderList(sellerSeq, keyword, status);
     }
 
-    /**
-     * 선택한 발주서의 세부 품목 리스트를 가져옵니다.
-     */
+    
     public List<PartnerOrderDetailDTO> getOrderDetail(Long orderSeq) {
         return partnerOrderDAO.selectOrderDetail(orderSeq);
     }
 
-    /**
-     * [발주 상태 변경 및 실시간 알림]
-     * 거래처가 상태를 바꾸면 DB를 업데이트하고, 해당 사업자에게 웹소켓으로 알림을 보냅니다.
-     */
+    
     public void updateOrderStatus(Long orderSeq, String status) {
-        // 1. DB 상태 업데이트
+        
         partnerOrderDAO.updateOrderStatus(orderSeq, status);
 
-        // 2. 이 주문을 넣은 사업자(buyer)의 번호를 찾음
+        
         Long buyerSeq = partnerOrderDAO.selectBuyerSeq(orderSeq);
 
-        // 3. 웹소켓으로 보낼 데이터 포장
+        
         Map<String, Object> message = new HashMap<>();
         message.put("orderSeq", orderSeq);
         message.put("status", status);
         message.put("message", getStatusMessage(status));
 
-        // 4. 사업자가 구독 중인 주소(/sub/order/사업자번호)로 전송
+        
         messagingTemplate.convertAndSend("/sub/order/" + buyerSeq, (Object) message);
 
-        // 5. 알림 이벤트 발행
+        
         try {
             Map<String, Object> orderInfo = orderDAO.findOrderInfoBySeq(orderSeq);
             if (orderInfo != null && buyerSeq != null) {
@@ -84,7 +73,7 @@ public class PartnerOrderService {
         }
     }
 
-    // 상태값에 따른 한글 메시지 변환
+    
     private String getStatusMessage(String status) {
         switch (status) {
             case "ACCEPTED": return "발주가 접수완료되었습니다.";
@@ -95,18 +84,14 @@ public class PartnerOrderService {
         }
     }
 
-    /**
-     * [초보자 가이드 - 거래처 대시보드 데이터 조회 서비스]
-     * 기능: 로그인한 파트너(거래처) 사장님의 고유 ID(sellerSeq)를 기반으로
-     *      실제 DB 데이터를 집계 및 가공하여 대시보드(KPI 카드, 매출/수금 차트, 미수금, 가맹점별 거래 현황, 공동구매 목록) 데이터를 한 묶음의 Map 객체로 구성합니다.
-     */
+    
     public Map<String, Object> getDashboardData(Long sellerSeq) {
         Map<String, Object> data = new HashMap<>();
 
-        // [1단계] 상단 요약 카드용 숫자 데이터 집계
-        // - todayNewOrders: 오늘 접수된 신규 가맹점 발주 개수
-        // - shippingOrders: 거래처에서 현재 배송 중인 발주 개수
-        // - waitingPayments: 가맹점에서 발주 완료하였으나 거래처로 아직 입금이 되지 않은 대기 금액 총합
+        
+        
+        
+        
         int todayNewOrders = partnerOrderDAO.selectTodayNewOrdersCount(sellerSeq);
         int shippingOrders = partnerOrderDAO.selectShippingOrdersCount(sellerSeq);
         int waitingPayments = partnerOrderDAO.selectWaitingPaymentsAmount(sellerSeq);
@@ -115,15 +100,15 @@ public class PartnerOrderService {
         data.put("shippingOrders", shippingOrders);
         data.put("waitingPayments", waitingPayments);
 
-        // [2단계] 월별 매출(Sales) 및 수금(Collection) 현황 조회
-        // - salesRaw: 월별 주문 총금액 (orders 테이블)
-        // - collectionsRaw: 월별 결제 완료된 총금액 (payments 테이블)
+        
+        
+        
         List<Map<String, Object>> salesRaw = partnerOrderDAO.selectMonthlySales(sellerSeq);
         List<Map<String, Object>> collectionsRaw = partnerOrderDAO.selectMonthlyCollections(sellerSeq);
 
-        // [3단계] 최근 6개월 매출/수금 데이터를 달별로 병합(Merge)
-        // - DB 조회 데이터에 특정 달의 거래 기록이 없더라도 차트의 가로축(1월~6월 등)이 유지되도록
-        //   최근 6개월의 맵 틀을 기본 '0원'으로 세팅해 놓은 후, 데이터가 있는 월만 덮어씁니다.
+        
+        
+        
         Map<String, Map<String, Object>> mergeMap = new java.util.LinkedHashMap<>();
         
         java.time.LocalDate now = java.time.LocalDate.now();
@@ -137,7 +122,7 @@ public class PartnerOrderService {
             mergeMap.put(monthName, mData);
         }
 
-        // 실제 DB에서 가져온 월별 매출 데이터를 기본 맵에 병합
+        
         if (salesRaw != null) {
             for (Map<String, Object> s : salesRaw) {
                 String m = String.valueOf(s.get("month"));
@@ -154,7 +139,7 @@ public class PartnerOrderService {
             }
         }
 
-        // 실제 값 병합 (수금)
+        
         if (collectionsRaw != null) {
             for (Map<String, Object> c : collectionsRaw) {
                 String m = String.valueOf(c.get("month"));
@@ -174,7 +159,7 @@ public class PartnerOrderService {
         List<Map<String, Object>> trendList = new java.util.ArrayList<>(mergeMap.values());
         data.put("monthlySalesAndCollections", trendList);
 
-        // 3. 이번 달 매출 & 수금
+        
         String currentMonthName = now.getMonthValue() + "월";
         int thisMonthSales = 0;
         int thisMonthCollections = 0;
@@ -185,11 +170,11 @@ public class PartnerOrderService {
         data.put("thisMonthSales", thisMonthSales);
         data.put("thisMonthCollections", thisMonthCollections);
 
-        // 4. 누적 미수금 및 변동 추이 계산
-        int totalReceivables = waitingPayments; // 실 미수금 합계 (주문은 넣었으나 결제 안된 금액)
+        
+        int totalReceivables = waitingPayments; 
         data.put("totalReceivables", totalReceivables);
 
-        // 미수금 변동 추이 (월별 누적 매출 - 누적 수금)
+        
         List<Map<String, Object>> receivableTrendList = new java.util.ArrayList<>();
         int accumSales = 0;
         int accumCollections = 0;
@@ -197,7 +182,7 @@ public class PartnerOrderService {
             accumSales += (int) m.get("sales");
             accumCollections += (int) m.get("collection");
             int diff = accumSales - accumCollections;
-            if (diff < 0) diff = 0; // 음수 방지
+            if (diff < 0) diff = 0; 
 
             Map<String, Object> trendItem = new HashMap<>();
             trendItem.put("month", m.get("month"));
@@ -206,7 +191,7 @@ public class PartnerOrderService {
         }
         data.put("receivableTrend", receivableTrendList);
 
-        // 5. 사업자별 매출 요약 정보
+        
         List<Map<String, Object>> bizSummaryRaw = partnerOrderDAO.selectBusinessSalesSummary(sellerSeq);
         List<Map<String, Object>> businessSales = new java.util.ArrayList<>();
         if (bizSummaryRaw != null) {
@@ -247,7 +232,7 @@ public class PartnerOrderService {
         }
         data.put("businessSales", businessSales);
 
-        // 6. 공동 발주 현황
+        
         List<Map<String, Object>> groupRaw = partnerOrderDAO.selectGroupOrders(sellerSeq);
         List<Map<String, Object>> groupOrders = new java.util.ArrayList<>();
         if (groupRaw != null) {

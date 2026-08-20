@@ -3,30 +3,30 @@ package com.soso.domain.mypage.dto;
 import org.springframework.web.multipart.MultipartFile;
 
 public class BusinessUpdateDTO {
-    // User 필드
+    
     private String nickname;
     private String phone;
     private String email;
     
-    // Store 필드
-    private Long storeSeq;       // 🏪 [멀티 프로필] 수정을 원하는 매장 번호 추가
+    
+    private Long storeSeq;       
     private String bizNumber;
     private String companyName;
-    private String ceoName;      // 👤 대표자명 추가
+    private String ceoName;      
     private Integer zonecode;
     private String address1;
     private String address2;
 
-    // 식별용
+    
     private Long userSeq;
 
-    // 🖼️ 이미지 파일 (Multipart)
+    
     private MultipartFile exteriorImg;
     private MultipartFile interiorImg;
 
     public BusinessUpdateDTO() {}
 
-    // Getters and Setters
+    
     public Long getStoreSeq() { return storeSeq; }
     public void setStoreSeq(Long storeSeq) { this.storeSeq = storeSeq; }
 

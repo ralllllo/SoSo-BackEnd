@@ -15,10 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @file AccountController.java
- * @description 거래처(파트너사) 관련 API를 제공하는 컨트롤러입니다.
- */
+
 @RestController
 @RequestMapping("/api/account")
 public class AccountController {
@@ -28,10 +25,7 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
-    /**
-     * 거래처(PARTNER 타입 유저의 매장) 검색 API
-     * @param searchTerm 업체명 또는 사업자 번호
-     */
+    
     @GetMapping("/search")
     public ResponseEntity<Map<String, Object>> searchPartnerStores(@RequestParam("searchTerm") String searchTerm) {
         logger.info("거래처 검색 요청: {}", searchTerm);
@@ -45,9 +39,7 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 모든 거래처(PARTNER 타입 유저의 매장) 조회 API
-     */
+    
     @GetMapping("/all-partners")
     public ResponseEntity<Map<String, Object>> getAllPartnerStores(
             @RequestParam(value = "searchTerm", required = false) String searchTerm,
@@ -64,9 +56,7 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 거래처 관계 등록 API
-     */
+    
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> registerAccount(@RequestBody AccountRelationRequestDto relationDto) {
         logger.info("거래처 관계 등록 요청: businessSeq={}, partnerSeq={}", 
@@ -81,9 +71,7 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 등록된 거래처 목록 조회 API
-     */
+    
     @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> getRegisteredAccounts(
             @RequestParam("businessSeq") int businessSeq,
@@ -102,9 +90,7 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 특정 거래처의 품목 목록 조회 API
-     */
+    
     @GetMapping("/items")
     public ResponseEntity<Map<String, Object>> getPartnerItems(@RequestParam("partnerSeq") int partnerSeq) {
         logger.info("거래처 품목 조회 요청: partnerSeq={}", partnerSeq);
@@ -118,9 +104,7 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 거래처 관계 삭제 API
-     */
+    
     @DeleteMapping("/{relationSeq}")
     public ResponseEntity<Map<String, Object>> deleteAccount(@PathVariable("relationSeq") int relationSeq) {
         logger.info("거래처 관계 삭제 요청: relationSeq={}", relationSeq);
@@ -134,9 +118,7 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * 특정 유저의 첫 번째 매장 시퀀스 조회 API
-     */
+    
     @GetMapping("/first-store/{userSeq}")
     public ResponseEntity<Map<String, Object>> getFirstStoreSeq(@PathVariable("userSeq") int userSeq) {
         logger.info("첫 번째 매장 시퀀스 조회 요청: userSeq={}", userSeq);
@@ -150,7 +132,7 @@ public class AccountController {
     }
 
     
- // 내가 등록한 거래처 목록 조회
+ 
     @GetMapping("/my-partners")
     public ResponseEntity<List<AccountSearchResponseDto>> myPartners(
             @RequestParam Long storeSeq
@@ -159,9 +141,7 @@ public class AccountController {
         return ResponseEntity.ok(list);
     }
      
-    /**
-     * 특정 거래처(파트너사) 상세 정보 조회 API
-     */
+    
     @GetMapping("/partner/{partnerSeq}")
     public ResponseEntity<AccountSearchResponseDto> getPartnerDetail(@PathVariable("partnerSeq") int partnerSeq) {
         logger.info("거래처 상세 정보 조회 요청: partnerSeq={}", partnerSeq);
